@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
+import com.sb.app.Tester;
+import com.sb.app.Tester2;
 import com.sb.domain.Student;
 
 public class StudentService {
@@ -38,25 +40,36 @@ public class StudentService {
 		return s;
 	}
 
-	public List<Student> getStudentsStartingWith(String c) {
+	public List<Student> getStudentsFilteredBy(Tester tester) {
 		List<Student> result = new ArrayList<>();
 		students.forEach(new BiConsumer<Integer, Student>() {
 			public void accept(Integer key, Student student) {
-				if (student.getName().startsWith(c)) {
+				if(tester.test(student)) {
+				//if (student.getName().startsWith(c)) {
 					result.add(student);
 				}
 			}
 		});
+		
+		List<Student> r2 = filterMapBy(students, (s) -> s.getId() > 10);
 
-		students.forEach((key, student) -> {
-			if (student.getName().startsWith(c)) {
-				result.add(student);
+
+		return result;
+	}
+
+	public <T> List<T> filterMapBy(Map<Integer, T> map, Tester2<T> tester) {
+		List<T> result = new ArrayList<>();
+		map.forEach(new BiConsumer<Integer, T>() {
+			public void accept(Integer key, T value) {
+				if(tester.test(value)) {
+					result.add(value);
+				}
 			}
 		});
 
 		return result;
 	}
-
+	
 	public List<Student> getAllStudents() {
 		List<Student> result = new ArrayList<>();
 
@@ -67,6 +80,7 @@ public class StudentService {
 		return result;
 
 	}
+
 
 	class XYZ {
 
