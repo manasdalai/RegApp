@@ -1,9 +1,13 @@
 package com.sb.app;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.sb.domain.Student;
 
@@ -17,29 +21,48 @@ public class Sorter {
 		List<Student> students = Arrays.asList( 
 				new Student(10, "Mary", Student.Status.HIBERNATING),
 				new Student(3, "Zoe", Student.Status.FULL_TIME),
+				new Student(7, "Madhu", Student.Status.FULL_TIME),
+				new Student(2, "Roberta", Student.Status.FULL_TIME),
 				new Student(4, "Sameer", Student.Status.FULL_TIME));
 		
-		List<String> ls = Arrays.asList("one", "two", "three");
+		List<Student> result = filter(students, (s) -> s.getId() > 2);
+		List<String> names = new ArrayList<>();
+		for(Student s : result) {
+			names.add(s.getName());
+		}
 
-		Collections.sort(students);
+	
+		List<List<String>> n2 = students.stream()
+				.parallel()
+				.filter((student) -> student.getId() > 2)
+				.map((st) -> Arrays.asList(st.getName()))
+				.collect(Collectors.toList());
 		
-		System.out.println(students);
+		Map<Integer, List<Student>> m = students.stream()
+				.filter(s -> s.getId() > 2)
+				.collect(Collectors.groupingBy(s -> s.getId()));
 		
-		Collections.sort(students, new NameComparator());
 
-		Collections.sort(students, (o1, o2) -> 
-			o1.getName().compareTo(o2.getName())
-		);
-
-		Collections.sort(students, (o1, o2) -> 
-			o1.getName().compareTo(o2.getName())
-		);
 		
+		System.out.println(result);
 		
-		students.forEach(s -> foo(s));
 
-		students.forEach(this::foo);
+		
 
+	}
+
+	public <T> List<T> filter(List<T> input, Predicate<T> tester) {
+		List<T> result = new ArrayList<>();
+		input.forEach(new Consumer<T>() {
+			public void accept(T value) {
+				if(tester.test(value)) {
+					result.add(value);
+				}
+			}
+		});
+		
+
+		return result;
 	}
 	
 	public void foo(Student s) {

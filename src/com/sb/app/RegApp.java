@@ -15,7 +15,7 @@ public class RegApp {
 		//students = ss.getStudentsStartingWith(new TestForFirstNames("A"));
 		System.out.println("A students: " + students);
 
-		Tester fullTimeStudents = new Tester() {
+		Tester<Student> fullTimeStudents = new Tester<Student>() {
 			public boolean test(Student student) {
 				return student.getStatus() == Student.Status.FULL_TIME;
 			}
@@ -35,54 +35,7 @@ public class RegApp {
 		System.out.println("fullTimeStudents students: " + students);
 	}
 	
-	public static class TestForFirstNames implements Tester
-	{
-		private String testString;
-		public TestForFirstNames(String testString) {
-			this.testString = testString;
-		}
-		public boolean test(Student student) {
-			return student.getName().startsWith(testString);
-		}
-	}
 
-	public static class TestForLastNames implements Tester
-	{
-		private String testString;
-		public TestForLastNames(String testString) {
-			this.testString = testString;
-		}
-		public boolean test(Student student) {
-			return student.getName().startsWith(testString);
-		}
-	}
-
-	public static void main2(String[] args) {
-		Thread th = new Thread(() -> {
-			while (true) {
-				RegApp.req1();
-				try {
-					Thread.sleep(5);
-				} catch (InterruptedException e) {
-				}
-			}
-		});
-
-		th.start();
-
-		Thread th2 = new Thread(() -> {
-			while (true) {
-				RegApp.req2();
-				try {
-					Thread.sleep(5);
-				} catch (InterruptedException e) {
-				}
-			}
-		});
-		
-		th2.start();
-
-	}
 
 	public static void req1() {
 		StudentService ss = new StudentService();

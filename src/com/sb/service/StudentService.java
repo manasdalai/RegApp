@@ -40,12 +40,11 @@ public class StudentService {
 		return s;
 	}
 
-	public List<Student> getStudentsFilteredBy(Tester tester) {
+	public List<Student> getStudentsFilteredBy(Tester<Student> tester) {
 		List<Student> result = new ArrayList<>();
 		students.forEach(new BiConsumer<Integer, Student>() {
 			public void accept(Integer key, Student student) {
 				if(tester.test(student)) {
-				//if (student.getName().startsWith(c)) {
 					result.add(student);
 				}
 			}
